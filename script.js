@@ -1,46 +1,64 @@
 function computerPlay() {
-    let randomNumber = Math.floor(Math.random() * 3);
+    const randomNumber = Math.floor(Math.random() * 3);
 
-    if (randomNumber === 0) {
-        return `Rock`;
-    } else if (randomNumber === 1) {
-        return `Paper`;
-    } else {
-        return `Scissors`;
+    switch(randomNumber) {
+        case 0:
+            return `rock`;
+            break;
+        case 1:
+            return `paper`;
+            break;
+        case 2:
+            return `scissors`;
+            break;
     }
 };
 
 function playRound(playerSelection, computerSelection) {
-    const playerSelectionCapitalized = playerSelection.charAt(0).toUpperCase() + playerSelection.slice(1);
-
-    if (playerSelectionCapitalized != computerSelection) {
-        return `You Lose!`
-    } else {
-        return `You Win!`
+    switch(true) {
+        case playerSelection === `rock` && computerSelection === `scissors`:
+        case playerSelection === `scissors` && computerSelection === `paper`:
+        case playerSelection === `paper` && computerSelection === `rock`:
+            return `You Win! ${playerSelection} beats ${computerSelection}.`
+        case computerSelection === `rock` && playerSelection === `scissors`:
+        case computerSelection === `scissors` && playerSelection === `paper`:
+        case computerSelection === `paper` && playerSelection === `rock`:
+            return `You Lose! ${computerSelection} beats ${playerSelection}.`
+        case playerSelection === computerSelection:
+            return `It's a tie!`
     }
 };
 
 function game() {
     let playerScore = 0;
     let computerScore = 0;
+    let numTies = 0;
 
     // Play 5 rounds
     for (let i = 0; i < 5 ; i++) {
-        const playerSelection = prompt(`Enter "Rock", "Paper" or "Scissors".`, `Rock`);
+        let playerSelection = prompt(`Please enter "rock", "paper" or "scissors".`, `rock`).toLowerCase();
+
+        // Validate player's selection
+        while (playerSelection != `rock` && playerSelection != `paper` && playerSelection != `scissors`) {
+            playerSelection = prompt(`Invalid choice. Please enter "rock", "paper" or "scissors".`, `rock`).toLowerCase();
+        }
+
         const computerSelection = computerPlay();
         const roundResult = playRound(playerSelection, computerSelection);
         
-        if (roundResult === `You Win!`) {
+        if (roundResult.startsWith(`You Win!`)) {
             playerScore += 1;
-        } else {
+        } else if (roundResult.startsWith(`You Lose!`)) {
             computerScore += 1;
+        } else {
+            numTies += 1;
         }
 
         // Show results of each round
         console.log(`Round ${i + 1}:`)
         console.log(`Player selection: ${playerSelection}, computer selection: ${computerSelection}.`)
         console.log(`Round result: ${roundResult}`)
-        console.log(`Player score: ${playerScore}, computer score: ${computerScore}`)
+        console.log(`Player score: ${playerScore}, computer score: ${computerScore}, ties: ${numTies}.`)
     };
 
     // Show the winner
